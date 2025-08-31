@@ -1,40 +1,74 @@
 import React, { useState, useEffect } from 'react';
+import AddTaskForm from './components/AddTaskForm';
+import TaskList from './components/TaskList';
+import * as api from './services/api';
 import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null);
 
-  // Placeholder for fetching tasks from the API
   useEffect(() => {
-    // In a real app, you'd fetch tasks from http://localhost:8000/api/tasks/
-    const dummyTasks = [
-      { id: 1, title: 'Set up project structure', completed: true },
-      { id: 2, title: 'Create frontend scaffold', completed: true },
-      { id: 3, title: 'Create backend scaffold', completed: true },
-      { id: 4, title: 'Connect frontend to backend', completed: false },
-    ];
-    setTasks(dummyTasks);
+    // Fetch tasks from the backend when the component mounts
+    const fetchTasks = async () => {
+      try {
+        const response = await api.getTasks();
+        setTasks(response.data);
+      } catch (err) {
+        setError('Failed to fetch tasks. Is the backend running?');
+        console.error(err);
+      }
+    };
+    fetchTasks();
   }, []);
+
+  const handleAddTask = async (taskData) => {
+    try {
+      const response = await api.createTask(taskData);
+      setTasks([...tasks, response.data]);
+    } catch (err) {
+      setError('Failed to add task.');
+      console.error(err);
+    }
+  };
+
+  const handleToggleComplete = async (id, completed) => {
+    try {
+      const taskToUpdate = tasks.find(task => task.id === id);
+      const updatedTask = { ...taskToUpdate, completed };
+
+      const response = await api.updateTask(id, updatedTask);
+      setTasks(tasks.map(task => (task.id === id ? response.data : task)));
+    } catch (err) {
+      setError('Failed to update task.');
+      console.error(err);
+    }
+  };
+
+  const handleDeleteTask = async (id) => {
+    try {
+      await api.deleteTask(id);
+      setTasks(tasks.filter(task => task.id !== id));
+    } catch (err) {
+      setError('Failed to delete task.');
+      console.error(err);
+    }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>To-Do List</h1>
+        <p>Built with React & FastAPI</p>
       </header>
+      {error && <p className="error">{error}</p>}
       <div className="task-container">
-        {/* In a real app, this would be a form for adding tasks */}
-        <div className="task-form">
-          <input type="text" placeholder="Add a new task..." />
-          <button>Add Task</button>
-        </div>
-        {/* In a real app, this would be a TaskList component */}
-        <ul className="task-list">
-          {tasks.map(task => (
-            <li key={task.id} className={task.completed ? 'completed' : ''}>
-              {task.title}
-            </li>
-          ))}
-        </ul>
+        <AddTaskForm onAddTask={handleAddTask} />
+        <TaskList
+          tasks={tasks}
+          onToggleComplete={handleToggleComplete}
+          onDelete={handleDeleteTask}
+        />
       </div>
     </div>
   );
