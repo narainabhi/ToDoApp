@@ -1,6 +1,22 @@
 # Full-Stack To-Do List Application
 
-This project is a simple To-Do List application built with a full-stack architecture, based on the requirements and designs outlined in the accompanying markdown documents.
+## Project Description
+
+This project is a complete To-Do List application built with a modern full-stack architecture. It features a reactive frontend built with React.js and a robust backend API powered by Python and FastAPI. The entire application is containerized with Docker, allowing for easy setup and deployment.
+
+This repository contains not only the source code but also the complete design and requirements documentation, including:
+- [Software Requirements Specification (SRS.md)](SRS.md)
+- [Conceptual Design (CONCEPTUAL_DESIGN.md)](CONCEPTUAL_DESIGN.md)
+- [Technical Design (TECHNICAL_DESIGN.md)](TECHNICAL_DESIGN.md)
+
+## Features
+
+- **Create, Read, Update, Delete (CRUD) Tasks:** Full support for managing tasks.
+- **Mark as Complete:** Tasks can be marked as complete or incomplete.
+- **Persistent Storage:** Tasks are saved in an SQLite database via the backend API.
+- **Reactive UI:** The frontend, built with React, updates in real-time without needing to refresh the page.
+- **Containerized:** The entire application (frontend and backend) runs in Docker containers, managed by Docker Compose.
+- **Fully Tested:** Includes comprehensive unit and integration tests for both the backend and frontend.
 
 ## Tech Stack
 
@@ -8,29 +24,31 @@ This project is a simple To-Do List application built with a full-stack architec
 - **Frontend:** JavaScript with [React.js](https://reactjs.org/)
 - **Database:** SQLite
 - **Containerization:** Docker and Docker Compose
-
-## Project Documents
-
-- [Software Requirements Specification (SRS.md)](SRS.md)
-- [Conceptual Design (CONCEPTUAL_DESIGN.md)](CONCEPTUAL_DESIGN.md)
-- [Technical Design (TECHNICAL_DESIGN.md)](TECHNICAL_DESIGN.md)
-
-## Getting Started
-
-To run this project locally, you will need [Docker](https://www.docker.com/get-started) installed.
-
-1. Clone the repository.
-2. Navigate to the root directory.
-3. Run the following command:
-   ```bash
-   docker-compose up --build
-   ```
-4. The frontend will be available at `http://localhost:3000`.
-5. The backend API documentation will be available at `http://localhost:8000/docs`.
+- **Testing:** `pytest` (backend), `React Testing Library` (frontend)
 
 ---
 
-## Running Tests
+## Local Setup and Running the Application
+
+To run this project locally, you will need [Docker](https://www.docker.com/get-started) and Docker Compose installed.
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <repository-name>
+    ```
+2.  **Build and run the containers:**
+    Run the following command from the root directory of the project:
+    ```bash
+    docker-compose up --build
+    ```
+3.  **Access the application:**
+    - The **frontend** will be available at `http://localhost:3000`.
+    - The **backend API documentation** (Swagger UI) will be available at `http://localhost:8000/docs`.
+
+---
+
+## Running Tests Locally
 
 This project includes unit and integration tests for both the backend and frontend.
 
@@ -74,25 +92,4 @@ The frontend tests use Jest and React Testing Library.
     ```bash
     npm test
     ```
-    This will launch the test runner in interactive watch mode.
-
-### CI/CD Workflows
-
-To automate testing in a CI/CD pipeline (e.g., GitHub Actions), you would add steps to your workflow file to execute the commands above. For example:
-
-```yaml
-# Example step for backend tests
-- name: Test Backend
-  run: |
-    cd backend
-    pip install -r requirements.txt -r requirements-dev.txt
-    pytest
-
-# Example step for frontend tests
-- name: Test Frontend
-  run: |
-    cd frontend
-    npm install
-    npm test -- --watchAll=false
-    # Use --watchAll=false to run all tests once and exit
-```
+    This will launch the test runner in interactive watch mode. To run the tests once and exit (for CI/CD), use `npm test -- --watchAll=false`.
